@@ -45,32 +45,47 @@ func (c *Client) Auth(username string, password string) (*lexidata.LexiData, err
 	return c.send(buf)
 }
 
+func (c *Client) Set(key string, value string) (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddArray(3).AddString("SET").AddString(key).AddString(value).Out()
+	return c.send(buf)
+}
+
+func (c *Client) Get(key string) (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddArray(2).AddString("GET").AddString(key).Out()
+	return c.send(buf)
+}
+
+func (c *Client) Del(key string) (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddArray(2).AddString("DEL").AddString(key).Out()
+	return c.send(buf)
+}
+
 func (c *Client) Close() {
 	c.connection.Close()
 }
 
 func (c *Client) readFromSocket() ([]byte, int, error) {
-    var res []byte
-    amt_read := 0
-    for {
-        buf := make([]byte, 1024)
-        c.connection.SetReadDeadline(time.Now().Add(1 * time.Millisecond))
-        n, err := c.connection.Read(buf)
-        if err != nil {
-            if err == io.EOF {
-                break
-            } else if err.(*net.OpError).Timeout() {
-                if amt_read > 0 {
-                    break
-                }
-                continue
-            }
-            return nil, 0, err
-        }
-        res = append(res, buf...)
-        amt_read += n
-    }
-    return res, amt_read, nil
+	var res []byte
+	amt_read := 0
+	for {
+		buf := make([]byte, 1024)
+		c.connection.SetReadDeadline(time.Now().Add(1 * time.Millisecond))
+		n, err := c.connection.Read(buf)
+		if err != nil {
+			if err == io.EOF {
+				break
+			} else if err.(*net.OpError).Timeout() {
+				if amt_read > 0 {
+					break
+				}
+				continue
+			}
+			return nil, 0, err
+		}
+		res = append(res, buf...)
+		amt_read += n
+	}
+	return res, amt_read, nil
 }
 
 func (c *Client) send(buf []byte) (*lexidata.LexiData, error) {

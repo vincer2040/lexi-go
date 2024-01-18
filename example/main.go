@@ -20,12 +20,33 @@ func main() {
         fmt.Println(err)
         os.Exit(1)
     }
-    fmt.Println(a)
+    a.Data.Print()
 
     p, err := client.Ping()
     if err != nil {
         fmt.Println(err)
         os.Exit(1)
     }
-    fmt.Println(p)
+    p.Data.Print()
+
+    s, err := client.Set("foo", "bar")
+    if err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+    }
+    s.Data.Print()
+
+    g, err := client.Get("foo")
+    if err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+    }
+    g.Data.Print()
+
+    d, err := client.Del("foo")
+    if err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+    }
+    d.Data.Print()
 }
