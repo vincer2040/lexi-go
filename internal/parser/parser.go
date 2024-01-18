@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/vincer2040/lexi-go/internal/util"
-	lexigo "github.com/vincer2040/lexi-go/pkg/lexi-go"
+	lexidata "github.com/vincer2040/lexi-go/pkg/lexi-data"
 )
 
 type Parser struct {
@@ -22,11 +22,11 @@ func New(input []byte, input_len int) Parser {
 	return p
 }
 
-func (p *Parser) Parse() (*lexigo.LexiData, error) {
+func (p *Parser) Parse() (*lexidata.LexiData, error) {
 	return p.parseData()
 }
 
-func (p *Parser) parseData() (*lexigo.LexiData, error) {
+func (p *Parser) parseData() (*lexidata.LexiData, error) {
 	switch p.ch {
 	case util.STRING_TYPE_BYTE:
 		return p.parseString()
@@ -42,7 +42,7 @@ func (p *Parser) parseData() (*lexigo.LexiData, error) {
 	return nil, errors.New("unknown data type byte")
 }
 
-func (p *Parser) parseString() (*lexigo.LexiData, error) {
+func (p *Parser) parseString() (*lexidata.LexiData, error) {
 	if !p.expectPeekToBeNum() {
 		return nil, errors.New("expected length")
 	}
@@ -78,15 +78,15 @@ func (p *Parser) parseString() (*lexigo.LexiData, error) {
 
 	str := builder.String()
 
-	res := &lexigo.LexiData{
-		Type: lexigo.String,
-		Data: lexigo.LexiString{Str: str},
+	res := &lexidata.LexiData{
+		Type: lexidata.String,
+		Data: lexidata.LexiString{Str: str},
 	}
 
 	return res, nil
 }
 
-func (p *Parser) parseInt() (*lexigo.LexiData, error) {
+func (p *Parser) parseInt() (*lexidata.LexiData, error) {
 	p.readByte()
 	var builder strings.Builder
 	for p.ch != '\r' && p.ch != 0 {
@@ -109,15 +109,15 @@ func (p *Parser) parseInt() (*lexigo.LexiData, error) {
 
 	p.readByte()
 
-	res := &lexigo.LexiData{
-		Type: lexigo.Int,
-		Data: lexigo.LexiInt{Integer: i},
+	res := &lexidata.LexiData{
+		Type: lexidata.Int,
+		Data: lexidata.LexiInt{Integer: i},
 	}
 
 	return res, nil
 }
 
-func (p *Parser) parseDouble() (*lexigo.LexiData, error) {
+func (p *Parser) parseDouble() (*lexidata.LexiData, error) {
 	p.readByte()
 	var builder strings.Builder
 	for p.ch != '\r' && p.ch != 0 {
@@ -141,15 +141,15 @@ func (p *Parser) parseDouble() (*lexigo.LexiData, error) {
 
 	p.readByte()
 
-	res := &lexigo.LexiData{
-		Type: lexigo.Double,
-		Data: lexigo.LexiDouble{Double: dbl},
+	res := &lexidata.LexiData{
+		Type: lexidata.Double,
+		Data: lexidata.LexiDouble{Double: dbl},
 	}
 
 	return res, nil
 }
 
-func (p *Parser) parseArray() (*lexigo.LexiData, error) {
+func (p *Parser) parseArray() (*lexidata.LexiData, error) {
 	if !p.expectPeekToBeNum() {
 		return nil, errors.New("expected length")
 	}
@@ -165,7 +165,7 @@ func (p *Parser) parseArray() (*lexigo.LexiData, error) {
 
 	p.readByte()
 
-	var data []*lexigo.LexiData
+	var data []*lexidata.LexiData
 
 	for i := 0; i < length; i++ {
 		parsed, err := p.parseData()
@@ -176,9 +176,9 @@ func (p *Parser) parseArray() (*lexigo.LexiData, error) {
 		data = append(data, parsed)
 	}
 
-	res := &lexigo.LexiData{
-		Type: lexigo.Array,
-		Data: lexigo.LexiArray{Array: data},
+	res := &lexidata.LexiData{
+		Type: lexidata.Array,
+		Data: lexidata.LexiArray{Array: data},
 	}
 
 	return res, nil

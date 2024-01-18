@@ -1,4 +1,4 @@
-package lexigo
+package lexidata
 
 type LexiDataT int
 
