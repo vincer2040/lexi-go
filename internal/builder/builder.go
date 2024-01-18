@@ -70,6 +70,10 @@ func (b *Builder) Reset() {
     b.buf = b.buf[:0]
 }
 
+func (b *Builder) out() []byte {
+    return b.buf
+}
+
 func (b *Builder) addLength(length int) {
 	lengthString := strconv.Itoa(length)
 	for _, ch := range lengthString {
