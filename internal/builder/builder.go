@@ -66,6 +66,10 @@ func (b *Builder) AddDouble(dbl float64) *Builder {
     return b
 }
 
+func (b *Builder) Reset() {
+    b.buf = b.buf[:0]
+}
+
 func (b *Builder) addLength(length int) {
 	lengthString := strconv.Itoa(length)
 	for _, ch := range lengthString {
