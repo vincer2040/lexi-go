@@ -16,6 +16,26 @@ type Parser struct {
 	ch       byte
 }
 
+type SimpleLookup struct {
+	str    string
+	simple lexidata.LexiSimple
+}
+
+var simpleLookups = []SimpleLookup{
+	{
+		str:    "OK",
+		simple: lexidata.Ok,
+	},
+	{
+		str:    "NONE",
+		simple: lexidata.None,
+	},
+	{
+		str:    "PONG",
+		simple: lexidata.Pong,
+	},
+}
+
 func New(input []byte, input_len int) Parser {
 	p := Parser{input, input_len, 0, 0}
 	p.readByte()
@@ -28,6 +48,8 @@ func (p *Parser) Parse() (*lexidata.LexiData, error) {
 
 func (p *Parser) parseData() (*lexidata.LexiData, error) {
 	switch p.ch {
+	case util.SIMPLE_TYPE_BYTE:
+		return p.parseSimple()
 	case util.STRING_TYPE_BYTE:
 		return p.parseString()
 	case util.INT_TYPE_BYTE:
@@ -40,6 +62,41 @@ func (p *Parser) parseData() (*lexidata.LexiData, error) {
 		break
 	}
 	return nil, errors.New("unknown data type byte")
+}
+
+func (p *Parser) parseSimple() (*lexidata.LexiData, error) {
+	p.readByte()
+	var builder strings.Builder
+	for p.ch != '\r' && p.ch != 0 {
+		builder.WriteByte(p.ch)
+		p.readByte()
+	}
+
+	if !p.curByteIs('\r') {
+		return nil, errors.New("expected ret car")
+	}
+
+	if !p.expectPeek('\n') {
+		return nil, errors.New("expected new line")
+	}
+
+	p.readByte()
+
+	s := builder.String()
+
+	for _, l := range simpleLookups {
+		if l.str != s {
+			continue
+		}
+		res := &lexidata.LexiData{
+			Type: lexidata.Simple,
+			Data: l.simple,
+		}
+
+		return res, nil
+	}
+
+	return nil, errors.New("invalid simple string")
 }
 
 func (p *Parser) parseString() (*lexidata.LexiData, error) {

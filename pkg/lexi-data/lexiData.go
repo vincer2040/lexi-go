@@ -4,6 +4,7 @@ type LexiDataT int
 
 const (
 	String LexiDataT = iota
+	Simple
 	Int
 	Double
 	Array
@@ -17,6 +18,16 @@ type LexiData struct {
 type LexiDataI interface {
 	lexiData()
 }
+
+type LexiSimple string
+
+const (
+	Ok   LexiSimple = "ok"
+	None            = "none"
+	Pong            = "pong"
+)
+
+func (LexiSimple) lexiData() {}
 
 type LexiString struct {
 	Str string
