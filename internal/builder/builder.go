@@ -71,7 +71,7 @@ func (b *Builder) Reset() *Builder {
     return b
 }
 
-func (b *Builder) out() []byte {
+func (b *Builder) Out() []byte {
     return b.buf
 }
 
