@@ -84,4 +84,25 @@ func main() {
 		os.Exit(1)
 	}
 	de.Data.Print()
+
+	zs, err := client.Zset("foo")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	zs.Data.Print()
+
+	zh, err := client.Zhas("foo")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	zh.Data.Print()
+
+	zd, err := client.Zdel("foo")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	zd.Data.Print()
 }

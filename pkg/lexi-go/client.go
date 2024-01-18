@@ -85,6 +85,21 @@ func (c *Client) Deque() (*lexidata.LexiData, error) {
 	return c.send(buf)
 }
 
+func (c *Client) Zset(value string) (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddArray(2).AddString("ZSET").AddString(value).Out()
+	return c.send(buf)
+}
+
+func (c *Client) Zhas(value string) (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddArray(2).AddString("ZHAS").AddString(value).Out()
+	return c.send(buf)
+}
+
+func (c *Client) Zdel(value string) (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddArray(2).AddString("ZDEL").AddString(value).Out()
+	return c.send(buf)
+}
+
 func (c *Client) Close() {
 	c.connection.Close()
 }
