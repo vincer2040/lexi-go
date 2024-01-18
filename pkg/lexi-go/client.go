@@ -45,6 +45,11 @@ func (c *Client) Auth(username string, password string) (*lexidata.LexiData, err
 	return c.send(buf)
 }
 
+func (c *Client) Keys() (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddString("KEYS").Out()
+	return c.send(buf)
+}
+
 func (c *Client) Set(key string, value string) (*lexidata.LexiData, error) {
 	buf := c.builder.Reset().AddArray(3).AddString("SET").AddString(key).AddString(value).Out()
 	return c.send(buf)
@@ -57,6 +62,16 @@ func (c *Client) Get(key string) (*lexidata.LexiData, error) {
 
 func (c *Client) Del(key string) (*lexidata.LexiData, error) {
 	buf := c.builder.Reset().AddArray(2).AddString("DEL").AddString(key).Out()
+	return c.send(buf)
+}
+
+func (c *Client) Push(value string) (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddArray(2).AddString("PUSH").AddString(value).Out()
+	return c.send(buf)
+}
+
+func (c *Client) Pop() (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddString("POP").Out()
 	return c.send(buf)
 }
 
