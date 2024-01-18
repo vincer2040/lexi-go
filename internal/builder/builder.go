@@ -66,8 +66,9 @@ func (b *Builder) AddDouble(dbl float64) *Builder {
     return b
 }
 
-func (b *Builder) Reset() {
+func (b *Builder) Reset() *Builder {
     b.buf = b.buf[:0]
+    return b
 }
 
 func (b *Builder) out() []byte {
