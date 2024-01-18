@@ -75,6 +75,16 @@ func (c *Client) Pop() (*lexidata.LexiData, error) {
 	return c.send(buf)
 }
 
+func (c *Client) Enque(value string) (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddArray(2).AddString("ENQUE").AddString(value).Out()
+	return c.send(buf)
+}
+
+func (c *Client) Deque() (*lexidata.LexiData, error) {
+	buf := c.builder.Reset().AddString("DEQUE").Out()
+	return c.send(buf)
+}
+
 func (c *Client) Close() {
 	c.connection.Close()
 }

@@ -70,4 +70,18 @@ func main() {
 		os.Exit(1)
 	}
 	pop.Data.Print()
+
+	e, err := client.Enque("foo")
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	e.Data.Print()
+
+	de, err := client.Deque()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	de.Data.Print()
 }
