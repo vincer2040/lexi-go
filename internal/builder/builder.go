@@ -10,6 +10,11 @@ type Builder struct {
 	buf []byte
 }
 
+func New() Builder {
+    buf := []byte{}
+    return Builder{buf}
+}
+
 func (b *Builder) AddPing() *Builder {
     b.buf = append(b.buf, util.SIMPLE_TYPE_BYTE)
     b.buf = append(b.buf, 'P')
