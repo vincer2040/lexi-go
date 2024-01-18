@@ -6,4 +6,5 @@ const (
     SIMPLE_TYPE_BYTE = '+'
     INT_TYPE_BYTE = ':'
     DOUBLE_TYPE_BYTE = ','
+    ERROR_TYPE_BYTE = '-'
 )

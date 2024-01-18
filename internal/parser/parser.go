@@ -58,6 +58,8 @@ func (p *Parser) parseData() (*lexidata.LexiData, error) {
 		return p.parseDouble()
 	case util.ARRAY_TYPE_BYTE:
 		return p.parseArray()
+    case util.ERROR_TYPE_BYTE:
+        return p.parseError()
 	default:
 		break
 	}
@@ -238,6 +240,33 @@ func (p *Parser) parseArray() (*lexidata.LexiData, error) {
 		Data: lexidata.LexiArray{Array: data},
 	}
 
+	return res, nil
+}
+
+func (p *Parser) parseError() (*lexidata.LexiData, error) {
+	p.readByte()
+	var builder strings.Builder
+	for p.ch != '\r' && p.ch != 0 {
+		builder.WriteByte(p.ch)
+		p.readByte()
+	}
+
+	if !p.curByteIs('\r') {
+		return nil, errors.New("expected ret car")
+	}
+
+	if !p.expectPeek('\n') {
+		return nil, errors.New("expected new line")
+	}
+
+	p.readByte()
+
+	res := &lexidata.LexiData{
+		Type: lexidata.Error,
+		Data: &lexidata.LexiString{
+			Str: builder.String(),
+		},
+	}
 	return res, nil
 }
 
